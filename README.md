@@ -50,7 +50,7 @@ async def main():
     print("Domains:", domains)
 
     # Create an inbox
-    inbox_id = await tm.create_inbox(name="myinbox", domain=domains[0], lifespan=60)
+    inbox_id = await tm.create_inbox(name="myinbox", domain=domains[0].get("domain"), lifespan=60)
     print("Created inbox:", inbox_id)
 
     # List inboxes

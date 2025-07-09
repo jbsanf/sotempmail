@@ -22,7 +22,8 @@ class TempMailSo:
             headers["Content-Type"] = "application/json"
             payload = {
                 "name": name,
-                "domain": domain
+                "domain": domain,
+                "lifespan": lifespan,
             }
             url = self.url + "/inboxes"
             async with cli.post(url, headers=headers, json=payload) as resp:
@@ -59,7 +60,7 @@ class TempMailSo:
                 elif data.get("code") != 0:
                     raise Exception(data.get("message"))
     
-    async def list_domains(self) -> List[str]:
+    async def list_domains(self) -> List[dict[str, str]]:
         async with aiohttp.ClientSession(headers=self.__headers()) as cli:
             headers = self.__headers()
             url = self.url + "/domains"
