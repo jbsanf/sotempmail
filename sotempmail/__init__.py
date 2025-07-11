@@ -17,7 +17,7 @@ class TempMailSo:
         }
     
     async def create_inbox(self, name: str, domain: str, lifespan: int) -> str:
-        async with aiohttp.ClientSession(headers=self.__headers()) as cli:
+        async with aiohttp.ClientSession() as cli:
             headers = self.__headers()
             headers["Content-Type"] = "application/json"
             payload = {
@@ -35,11 +35,14 @@ class TempMailSo:
                 return data.get("data")
     
     async def delete_email(self, inbox_id: str, email_id: str) -> None:
-        async with aiohttp.ClientSession(headers=self.__headers()) as cli:
+        async with aiohttp.ClientSession() as cli:
             headers = self.__headers()
             headers["Content-Type"] = "application/json"
             payload = {}
-            url = self.url + f"/inboxes/{inbox_id}/mails/{email_id}"
+            url = self.url + "/inboxes/{inbox_id}/mails/{email_id}".format(
+                inbox_id=inbox_id.upper(),
+                email_id=email_id.upper(),
+            )
             async with cli.delete(url, headers=headers, json=payload) as resp:
                 data = await resp.json()
                 if data is None:
@@ -48,11 +51,11 @@ class TempMailSo:
                     raise Exception(data.get("message"))
     
     async def delete_inbox(self, inbox_id: str) -> None:
-        async with aiohttp.ClientSession(headers=self.__headers()) as cli:
+        async with aiohttp.ClientSession() as cli:
             headers = self.__headers()
             headers["Content-Type"] = "application/json"
             payload = {}
-            url = self.url + f"/inboxes/{inbox_id}"
+            url = self.url + f"/inboxes/{inbox_id.upper()}"
             async with cli.delete(url, headers=headers, json=payload) as resp:
                 data = await resp.json()
                 if data is None:
@@ -61,7 +64,7 @@ class TempMailSo:
                     raise Exception(data.get("message"))
     
     async def list_domains(self) -> List[dict[str, str]]:
-        async with aiohttp.ClientSession(headers=self.__headers()) as cli:
+        async with aiohttp.ClientSession() as cli:
             headers = self.__headers()
             url = self.url + "/domains"
             async with cli.get(url, headers=headers) as resp:
@@ -73,9 +76,9 @@ class TempMailSo:
                 return data.get("data")
     
     async def list_emails(self, inbox_id: str) -> List[dict[str, str]]:
-        async with aiohttp.ClientSession(headers=self.__headers()) as cli:
+        async with aiohttp.ClientSession() as cli:
             headers = self.__headers()
-            url = self.url + f"/inboxes/{inbox_id}/mails"
+            url = self.url + f"/inboxes/{inbox_id.upper()}/mails"
             async with cli.get(url, headers=headers) as resp:
                 data = await resp.json()
                 if data is None:
@@ -85,7 +88,7 @@ class TempMailSo:
                 return data.get("data")
     
     async def list_inboxes(self) -> List[dict[str, str]]:
-        async with aiohttp.ClientSession(headers=self.__headers()) as cli:
+        async with aiohttp.ClientSession() as cli:
             headers = self.__headers()
             url = self.url + "/inboxes"
             async with cli.get(url, headers=headers) as resp:
@@ -97,9 +100,12 @@ class TempMailSo:
                 return data.get("data")
     
     async def retrieve_email(self, inbox_id: str, email_id: str) -> dict[str, str]:
-        async with aiohttp.ClientSession(headers=self.__headers()) as cli:
+        async with aiohttp.ClientSession() as cli:
             headers = self.__headers()
-            url = self.url + f"/inboxes/{inbox_id}/mails/{email_id}"
+            url = self.url + "/inboxes/{inbox_id}/mails/{email_id}".format(
+                inbox_id=inbox_id.upper(),
+                email_id=email_id.upper(),
+            )
             async with cli.get(url, headers=headers) as resp:
                 data = await resp.json()
                 if data is None:
